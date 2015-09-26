@@ -1,0 +1,24 @@
+{
+    "name": "maddoger/yii2-cms-core",
+    "type": "yii2-extension",
+    "description": "CMS Core extension for Yii2.",
+    "authors": [
+        {
+            "name": "Vitaliy Syrchikov",
+            "email": "maddoger@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "maddoger\\core\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
