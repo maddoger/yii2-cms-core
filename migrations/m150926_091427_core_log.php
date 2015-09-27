@@ -14,20 +14,21 @@ class m150926_091427_core_log extends Migration
 
         $this->createTable('{{%core_log}}', [
             'id' => $this->bigPrimaryKey(),
-            'type' => $this->string(20)->notNull(),
-            'title' => $this->string()->notNull(),
-            'message' => $this->string(),
-            'data' => $this->text(),
-            'created_at' => $this->integer()->notNull(),
-            'created_by' => $this->integer(),
+            'level' => $this->integer(),
+            'category' => $this->string(),
+            'log_time' => $this->double(),
+            'prefix' => $this->text(),
+            'message' => $this->text(),
         ], $tableOptions);
 
-        $this->createIndex($this->db->tablePrefix .'core_log_created_at_ix', '{{%core_log}}', 'created_at');
+        $this->createIndex($this->db->tablePrefix .'core_log_level_ix', '{{%core_log}}', 'level');
+        $this->createIndex($this->db->tablePrefix .'core_log_category_ix', '{{%core_log}}', 'category');
     }
 
     public function safeDown()
     {
-        $this->dropIndex($this->db->tablePrefix .'core_log_created_at_ix', '{{%core_log}}');
+        $this->dropIndex($this->db->tablePrefix .'core_log_category_ix', '{{%core_log}}');
+        $this->dropIndex($this->db->tablePrefix .'core_log_level_ix', '{{%core_log}}');
         $this->dropTable('{{%core_log}}');
     }
 }
