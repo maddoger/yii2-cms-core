@@ -16,10 +16,6 @@ use yii\log\Logger;
  *
  * On attach - load configuration, apply it
  *
- * $module->config[var]?
- * $module->params[var]?
- * $module->var?
- *
  * @author Vitaliy Syrchikov <maddoger@gmail.com>
  * @link http://syrchikov.name
  * @package maddoger/yii2-core
@@ -30,6 +26,11 @@ class ConfigurationBehavior extends Behavior
      * @var bool
      */
     public $autoLoad = true;
+
+    /**
+     * @var array name => default value
+     */
+    public $attributes = null;
 
     /**
      * @var string key storage component id
@@ -66,14 +67,23 @@ class ConfigurationBehavior extends Behavior
 
     /**
      * Returns owner config
-     * @param array $defaults
      * @return mixed
      */
-    public function getConfig($defaults = [])
+    public function getConfiguration()
     {
         $class = $this->owner->className();
-        $config = $this->_keyStorage->get($class) ?: [];
-        return array_replace($defaults, $config);
+        $dbConfig = $this->_keyStorage->get($class) ?: [];
+
+        if (is_array($this->attributes)) {
+            //Needs to filter
+            $config = [];
+            foreach ($this->attributes as $key=>$default) {
+                $config[$key] = isset($dbConfig[$key]) ? $dbConfig[$key] : $default;
+            }
+            return $config;
+        } else {
+            return $dbConfig;
+        }
     }
 
     /**
@@ -81,7 +91,7 @@ class ConfigurationBehavior extends Behavior
      * @param mixed $config
      * @return bool
      */
-    public function setConfig($config)
+    public function setConfiguration($config)
     {
         $class = $this->owner->className();
         return $this->_keyStorage->set($class, $config);
@@ -92,9 +102,9 @@ class ConfigurationBehavior extends Behavior
      */
     public function configure()
     {
-        $config = $this->getConfig();
+        $config = $this->getConfiguration();
         if ($config) {
-            Yii::getLogger()->log('CONFIG_BEHAVIOR_CONFIGURE', Logger::LEVEL_INFO);
+            Yii::getLogger()->log('CONFIGURATION_BEHAVIOR - '.$this->owner->className(), Logger::LEVEL_INFO);
             Yii::configure($this->owner, $config);
         }
     }
