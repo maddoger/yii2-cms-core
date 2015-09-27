@@ -8,13 +8,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist maddoger/yii2-core "*"
+php composer.phar require --prefer-dist maddoger/yii2-cms-core "*"
 ```
 
 or add
 
 ```
-"maddoger/yii2-core": "*"
+"maddoger/yii2-cms-core": "*"
 ```
 
 to the require section of your `composer.json` file.
