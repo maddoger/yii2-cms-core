@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @copyright Copyright (c) 2015 Vitaliy Syrchikov
  * @link http://syrchikov.name
@@ -7,6 +6,7 @@
 
 namespace maddoger\core\components;
 
+use maddoger\core\models\DynamicModel;
 use Yii;
 use yii\base\Module as BaseModule;
 
@@ -26,6 +26,15 @@ class BackendModule extends BaseModule
      * @var integer
      */
     public $sortNumber = null;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->registerTranslations();
+    }
 
     /**
      * @return string|null Module name
@@ -82,7 +91,7 @@ class BackendModule extends BaseModule
      */
     public function getConfigurationView()
     {
-        $path = $this->getViewPath() . DIRECTORY_SEPARATOR . 'config.php';
+        $path = $this->getViewPath() . DIRECTORY_SEPARATOR . 'configuration.php';
         if (file_exists($path)) {
             return $path;
         } else {
@@ -118,5 +127,13 @@ class BackendModule extends BaseModule
     public function getSearchSources()
     {
         return null;
+    }
+
+    /**
+     * Calls after module initialization
+     */
+    public function registerTranslations()
+    {
+
     }
 }
