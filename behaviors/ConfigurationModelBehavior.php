@@ -9,12 +9,12 @@ namespace maddoger\core\behaviors;
 use Yii;
 use yii\base\Behavior;
 use yii\base\Exception;
-use yii\log\Logger;
 
 /**
  * ConfigurationModelBehavior
  *
  * On attach - load configuration model from key-value storage
+ * All settings exist only in that model.
  *
  * @author Vitaliy Syrchikov <maddoger@gmail.com>
  * @link http://syrchikov.name
@@ -28,14 +28,14 @@ class ConfigurationModelBehavior extends Behavior
     public $autoload = true;
 
     /**
-     * @var null
+     * @var string
      */
-    public $modelClass = null;
+    public $modelClass;
 
     /**
-     * @var array name => default value
+     * @var array array of attributes name => default value
      */
-    public $attributes = null;
+    public $attributes;
 
     /**
      * @var string key storage component id
@@ -45,7 +45,7 @@ class ConfigurationModelBehavior extends Behavior
     /**
      * @var \maddoger\core\components\KeyStorage
      */
-    private $_keyStorage = null;
+    private $_keyStorage;
 
     /**
      * @var \yii\base\Model
@@ -61,6 +61,9 @@ class ConfigurationModelBehavior extends Behavior
 
         if (!$this->keyStorage || !($this->_keyStorage = Yii::$app->get($this->keyStorage))) {
             throw new Exception('KeyStorage must be set and exists.');
+        }
+        if (!$this->modelClass) {
+            throw new Exception('Model class must bet set.');
         }
     }
 
@@ -83,15 +86,16 @@ class ConfigurationModelBehavior extends Behavior
     {
         if ($this->_configuration === null) {
 
-            $this->_configuration = $this->_keyStorage->get($this->owner->className().'+'.$this->modelClass) ?: [];
+            $this->_configuration = $this->_keyStorage->get($this->getKey()) ?: [];
             $modelClass = $this->modelClass;
             if (!$this->_configuration || !($this->_configuration instanceof $modelClass)) {
                 //Initialize new model. Default values must be set in model (init method)
                 $this->_configuration = Yii::createObject($modelClass);
             }
 
+            //Default values from 'attributes'
             if (is_array($this->attributes)) {
-                foreach ($this->attributes as $key=>$default) {
+                foreach ($this->attributes as $key => $default) {
                     if ($this->_configuration->{$key} === null) {
                         $this->_configuration->{$key} = $default;
                     }
@@ -118,6 +122,14 @@ class ConfigurationModelBehavior extends Behavior
                 return false;
             }
         }
-        return $this->_keyStorage->set($this->owner->className().'+'.$this->modelClass, $this->_configuration);
+        return $this->_keyStorage->set($this->getKey(), $this->_configuration);
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->owner->className() . '+' . $this->modelClass;
     }
 }

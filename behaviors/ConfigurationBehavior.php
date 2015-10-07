@@ -33,6 +33,11 @@ class ConfigurationBehavior extends Behavior
     public $attributes = null;
 
     /**
+     * @var bool don't save attributes with default values, only changed
+     */
+    public $ignoreIfDefault = true;
+
+    /**
      * @var string key storage component id
      */
     public $keyStorage = 'keyStorage';
@@ -71,14 +76,13 @@ class ConfigurationBehavior extends Behavior
      */
     public function getConfiguration()
     {
-        $class = $this->owner->className();
-        $dbConfig = $this->_keyStorage->get($class) ?: [];
+        $dbConfig = $this->_keyStorage->get($this->getKey()) ?: [];
 
         if (is_array($this->attributes)) {
             //Needs to filter
             $config = [];
             foreach ($this->attributes as $key=>$default) {
-                $config[$key] = isset($dbConfig[$key]) ? $dbConfig[$key] : $default;
+                $config[$key] = (isset($dbConfig[$key]) && $dbConfig[$key]!==null)  ? $dbConfig[$key] : $default;
             }
             return $config;
         } else {
@@ -89,12 +93,27 @@ class ConfigurationBehavior extends Behavior
     /**
      * Save config
      * @param mixed $config
+     * @param bool $apply
      * @return bool
      */
-    public function setConfiguration($config)
+    public function saveConfiguration($config, $apply = true)
     {
-        $class = $this->owner->className();
-        return $this->_keyStorage->set($class, $config);
+        if ($this->ignoreIfDefault && $this->attributes) {
+            foreach ($this->attributes as $key=>$default) {
+                if (isset($config[$key]) && $config[$key]==$default) {
+                    unset($config[$key]);
+                }
+            }
+        }
+        if ($this->_keyStorage->set($this->getKey(), $config))
+        {
+            if ($apply) {
+                $this->configure();
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -107,5 +126,13 @@ class ConfigurationBehavior extends Behavior
             Yii::getLogger()->log('CONFIGURATION_BEHAVIOR - '.$this->owner->className(), Logger::LEVEL_INFO);
             Yii::configure($this->owner, $config);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->owner->className();
     }
 }

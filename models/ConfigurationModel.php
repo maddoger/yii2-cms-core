@@ -18,6 +18,11 @@ use yii\base\Model;
  */
 class ConfigurationModel extends Model
 {
+    /**
+     * @var string key of
+     */
+    public $key;
+
     public function __sleep()
     {
         //Save only attributes

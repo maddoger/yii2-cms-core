@@ -34,6 +34,7 @@ class BackendModule extends BaseModule
     {
         parent::init();
         $this->registerTranslations();
+        $this->ensureBehaviors();
     }
 
     /**
@@ -76,10 +77,11 @@ class BackendModule extends BaseModule
     public function getConfigurationModel()
     {
         $model = new DynamicModel();
+        $model->setFormName($this->id.'Configuration');
 
         $model->defineAttribute('sortNumber', $this->sortNumber);
         $model->addRule('sortNumber', 'integer');
-        $model->addRule('sortNumber', 'filter', ['filter' => 'intval']);
+        $model->addRule('sortNumber', 'default', ['value' => null]);
 
         return $model;
     }
@@ -97,6 +99,15 @@ class BackendModule extends BaseModule
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param \yii\base\Model $model
+     * @return bool|null
+     */
+    public function saveConfigurationModel($model)
+    {
+        return null;
     }
 
     /**

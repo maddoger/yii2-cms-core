@@ -17,7 +17,15 @@ use Yii;
  */
 class DynamicModel extends \yii\base\DynamicModel
 {
+    /**
+     * @var array
+     */
     private $_attributeLabels;
+
+    /**
+     * @var string
+     */
+    private $_formName;
 
     /**
      * Defines an attribute.
@@ -39,5 +47,22 @@ class DynamicModel extends \yii\base\DynamicModel
     public function attributeLabels()
     {
         return $this->_attributeLabels;
+    }
+
+    /**
+     * Set dynamic form name
+     * @param string $value
+     */
+    public function setFormName($value)
+    {
+        $this->_formName = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function formName()
+    {
+        return $this->_formName ?: parent::formName();
     }
 }
