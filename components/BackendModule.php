@@ -70,47 +70,6 @@ class BackendModule extends BaseModule
     }
 
     /**
-     * Returns configuration model
-     *
-     * @return \yii\base\Model
-     */
-    public function getConfigurationModel()
-    {
-        $model = new DynamicModel();
-        $model->setFormName($this->id.'Configuration');
-
-        $model->defineAttribute('sortNumber', $this->sortNumber);
-        $model->addRule('sortNumber', 'integer');
-        $model->addRule('sortNumber', 'default', ['value' => null]);
-
-        return $model;
-    }
-
-    /**
-     * Returns configuration view file name
-     *
-     * @return string|null
-     */
-    public function getConfigurationView()
-    {
-        $path = $this->getViewPath() . DIRECTORY_SEPARATOR . 'configuration.php';
-        if (file_exists($path)) {
-            return $path;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param \yii\base\Model $model
-     * @return bool|null
-     */
-    public function saveConfigurationModel($model)
-    {
-        return null;
-    }
-
-    /**
      * Rules needed for administrator
      *
      * Operations must be set before using in roles.

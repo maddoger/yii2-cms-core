@@ -41,3 +41,57 @@ Logging to DB
     ],
 ],
 ```
+
+Configuration
+-------------
+
+Configurations in modules
+    - properties
+    - models (frontend & backend)
+
+For usage:
+    - loading
+    - reading interface (model or property)
+
+For editing:
+    - view
+    - model
+    - load/save interface
+
+ConfigurationBehavior
+
+Universal behavior.
+```
+'configurationBehavior' => [
+    'class' => ConfigurationBehavior::className(),
+    'key' => $this->id.'_custom', //owner class by default
+
+    //Reading
+    'attributes' => [
+        //Default values
+        'logoText' => $this->logoText,
+        'logoImageUrl' => $this->logoImageUrl,
+        'sortNumber' => $this->sortNumber,
+    ],
+    'saveToOwnerProperties' => true, // if true all attributes will be written in owner properties
+                                     // otherwise configuration model/array will be available through getConfiguration()
+
+    //Editing
+    'view' => $this->getViewPath() . DIRECTORY_SEPARATOR . 'configuration.php',
+    //Model for user
+    'modelClass' => 'maddoger\admin\model\Configuration.php',
+    //OR
+    'dynamicModel' => [
+        'formName' => $this->id,
+        'attributes' => [
+            'logoText' => $this->logoText,
+            'logoImageUrl' => $this->logoImageUrl,
+            'sortNumber' => $this->sortNumber,
+        ],
+        'rules' => [
+            [['logoText', 'logoImageUrl'], 'string'],
+            [['logoText', 'logoImageUrl', 'sortNumber'], 'default', ['value' => null]],
+        ],
+    ]
+]
+```
