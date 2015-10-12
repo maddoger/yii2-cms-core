@@ -83,11 +83,6 @@ Universal behavior.
     //OR
     'dynamicModel' => [
         'formName' => $this->id,
-        'attributes' => [
-            'logoText' => $this->logoText,
-            'logoImageUrl' => $this->logoImageUrl,
-            'sortNumber' => $this->sortNumber,
-        ],
         'rules' => [
             [['logoText', 'logoImageUrl'], 'string'],
             [['logoText', 'logoImageUrl', 'sortNumber'], 'default', ['value' => null]],
