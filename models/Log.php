@@ -5,6 +5,7 @@ namespace maddoger\core\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
+use yii\log\Logger;
 
 /**
  * Log message model
@@ -38,6 +39,23 @@ class Log extends ActiveRecord
             [['prefix', 'message'], 'string'],
             [['category'], 'string', 'max' => 255]
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return stristr($this->message, 'Stack trace', true) ?:
+            substr($this->message, 0, 200);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLevelName()
+    {
+        return Logger::getLevelName($this->level);
     }
 
     /**
