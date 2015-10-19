@@ -6,7 +6,6 @@
 
 namespace maddoger\core\components;
 
-use maddoger\core\models\DynamicModel;
 use Yii;
 use yii\base\Module as BaseModule;
 
@@ -26,6 +25,16 @@ class BackendModule extends BaseModule
      * @var integer
      */
     public $sortNumber = null;
+
+    /**
+     * @var bool
+     */
+    public $showNavigation = true;
+
+    /**
+     * @var array real navigation
+     */
+    private $_navigation;
 
     /**
      * @inheritdoc
@@ -83,10 +92,32 @@ class BackendModule extends BaseModule
 
     /**
      * Returns navigation items for backend
-     *
      * @return array
      */
     public function getNavigation()
+    {
+        if ($this->_navigation) {
+            return $this->_navigation;
+        } else {
+            return $this->getDefaultNavigation();
+        }
+    }
+
+    /**
+     * Replaces default navigation
+     * @param $value
+     */
+    public function setNavigation($value)
+    {
+        $this->_navigation = $value;
+    }
+
+    /**
+     * Returns module`s default navigation items for backend
+     *
+     * @return array
+     */
+    public function getDefaultNavigation()
     {
         return null;
     }

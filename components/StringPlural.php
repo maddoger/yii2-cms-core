@@ -1,19 +1,21 @@
 <?php
 
 namespace maddoger\core\components;
-/*
-echo(StringPlural::Plural(1, array('окно', 'окна', 'окон')).'<br>');
-echo(StringPlural::Plural(2, 'окно', 'окна', 'окон').'<br>');
-echo(StringPlural::Plural(5, array('окно', 'окна', 'окон')).'<br>');
 
-echo(StringPlural::PluralEn(1, array('window', 'windows')).'<br>');
-echo(StringPlural::PluralEn(2, 'window', 'windows').'<br>');
+/**
+ * Helper class for string pluralization
+ * You can set default language using
+ *
+ *   echo(StringPlural::Plural(1, array('окно', 'окна', 'окон')).'<br>');
+ *   echo(StringPlural::Plural(2, 'окно', 'окна', 'окон').'<br>');
+ *   echo(StringPlural::Plural(5, array('окно', 'окна', 'окон')).'<br>');
+ *   echo(StringPlural::PluralEn(1, array('window', 'windows')).'<br>');
+ *   echo(StringPlural::PluralEn(2, 'window', 'windows').'<br>');
 */
-
 class StringPlural
 {
     /** Определяет дефолтовый язык */
-    const PLURAL_DEFAULT_LANG = 'ru';
+    public static $PLURAL_DEFAULT_LANG = 'ru';
 
     /** Получить правильную форму слова для дефолтового(!) языка в соответствии с числом определяющим количество.
      * Дефолтовый язык определяется константой PLURAL_DEFAULT_LANG (по дефолту "ru") в данном классе.
@@ -38,7 +40,7 @@ class StringPlural
             for ($i = 1, $x = count($argv); $i < $x; $i++) $arr[] = $argv[$i];
         }
 
-        return self::PluralLang(self::PLURAL_DEFAULT_LANG, $amount, $arr);
+        return static::PluralLang(static::$PLURAL_DEFAULT_LANG, $amount, $arr);
     }
 
     /** Получить правильную форму слова для нужного языка в соответствии с числом определяющим количество
@@ -47,8 +49,8 @@ class StringPlural
      * @param integer $amount число определяющее количетсво "предметов" слова
      * @param mixed $_
      *
-     * @example self::PluralLang('en', 1, array('window', 'windows')); //window
-     * @example self::PluralLang('en', 2, 'window', 'windows'); //windows
+     * @example static::PluralLang('en', 1, array('window', 'windows')); //window
+     * @example static::PluralLang('en', 2, 'window', 'windows'); //windows
      *
      * @return string
      */
@@ -63,11 +65,11 @@ class StringPlural
 
         $amount = (int)$amount;
 
-        $form = self::PluralLangGetForm($lang, $amount);
+        $form = static::PluralLangGetForm($lang, $amount);
         if (is_array($_)) {
             if (array_key_exists($form, $_)) {
                 return $_[$form];
-            } elseif (count($_ > 0)) {
+            } elseif (count($_) > 0) {
                 return $_[0];
             } else {
                 trigger_error(__METHOD__ . ': missing required arguments', E_USER_WARNING);
@@ -251,8 +253,8 @@ class StringPlural
      * @param integer $amount число определяющее количетсво "предметов" слова
      * @param mixed $_
      *
-     * @example self::PluralEn(1, array('window', 'windows')); //window
-     * @example self::PluralEn(2, 'window', 'windows'); //windows
+     * @example static::PluralEn(1, array('window', 'windows')); //window
+     * @example static::PluralEn(2, 'window', 'windows'); //windows
      *
      * @return string
      */
@@ -267,7 +269,7 @@ class StringPlural
             for ($i = 1, $x = count($argv); $i < $x; $i++) $arr[] = $argv[$i];
         }
 
-        return self::PluralLang('en', $amount, $arr);
+        return static::PluralLang('en', $amount, $arr);
     }
 
     /** Получить количество словоформ множественного числа для данного языка
