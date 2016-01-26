@@ -16,6 +16,13 @@ use yii\log\Logger;
  * ConfigurationBehavior
  *
  * On attach - load configuration, apply it
+ * For autocompletion you can use phpdoc methods
+ * (@)method array|model getConfiguration()
+ * (@)method \maddoger\core\models\DynamicModel|model getConfigurationModel()
+ * (@)method boolean saveConfigurationModel($model, $validate = true, $apply = true)
+ *
+ * If you want to use one configuration for several objects,
+ * just set one key property for all of them.
  *
  * @author Vitaliy Syrchikov <maddoger@gmail.com>
  * @link http://syrchikov.name
@@ -57,10 +64,15 @@ class ConfigurationBehavior extends Behavior
     public $roles;
 
     /**
-     * @var string|array configuration model class
+     * @var string configuration model class
      * example: maddoger\admin\model\Configuration.php
      */
     public $modelClass;
+
+    /**
+     * @var array configuration for configuration model
+     */
+    public $modelConfig = [];
 
     /**
      * @var array Dynamic model properties, if modelClass is not use
@@ -155,7 +167,7 @@ class ConfigurationBehavior extends Behavior
                 $modelClass = $this->modelClass;
                 if (!$this->_configuration || !($this->_configuration instanceof $modelClass)) {
                     //Initialize new model. Default values must be set in model (init method)
-                    $this->_configuration = Yii::createObject($modelClass);
+                    $this->_configuration = Yii::createObject($modelClass, $this->modelConfig);
                 }
 
                 //Default values from 'attributes'
